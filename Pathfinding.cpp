@@ -184,3 +184,90 @@ bool GBFS(const WeightedGraph& g, const WeightedGraphNode* start,
 	// return booling for path found
 	return (current == goal) ? true : false;
 };
+
+// Scratch data for the A* pathfinding algorithm
+struct AStarScratch
+{
+	const WeightedEdge* mParentEdge = nullptr;
+
+	float mHeuristic = 0.0f;
+
+	float mActualFromStart = 0.0f;
+
+	bool mInOpenSet = false;
+
+	bool mInClosedSet = false;
+};
+
+using AStarMap =
+std::unordered_map<const WeightedGraphNode*, AStarScratch>;
+
+// A* Search implementation
+bool AStarSearch(const WeightedGraph& g, const WeightedGraphNode* start,
+	const WeightedGraphNode* goal, AStarMap& outMap)
+{
+	// start by creating a vector for the open set
+	std::vector<const WeightedGraphNode*> openSet;
+
+	// set current node to the start node and add to the closed set
+	const WeightedGraphNode* current = start;
+	outMap[current].mInClosedSet = true;
+
+	// main loop of GBFS
+
+	do
+	{
+		// adding adjacent nodes to the open set
+		for (const WeightedEdge* edge : current->mEdges)
+		{
+			const WeightedGraphNode* neighbor = edge->mTo;
+
+			// get scratch data for this node
+			AStarScratch& data = outMap[neighbor];
+
+			// Add only if it's not in the closed set
+			if (!data.mInClosedSet)
+			{
+				if (!data.mInOpenSet)
+				{
+					// Not in the open set, so parent is current
+					data.mParentEdge = edge;
+					// compute heuristic for this node and
+					// place in open set
+					data.mHeuristic = ComputeHeuristic(neighbor, goal);
+					// Actual cost is the parent's plus cost of traversing edge
+
+					data.mActualFromStart = outMap[current].mActualFromStart +
+						edge->mWeight;
+
+					data.mInOpenSet = true;
+					openSet.emplace_back(neighbor);
+				}
+			}
+		}
+		if (openSet.empty())
+		{
+			break; // there is no path from start to goal
+		}
+
+		// Find the lowest cost node in the open set
+		auto iter = std::min_element(openSet.begin(), openSet.end(),
+			[&outMap](const WeightedGraphNode* a, const WeightedGraphNode* b)
+			{
+				float fOfA = outMap[a].mHeuristic + outMap[a].mActualFromStart;
+				float fOfB = outMap[b].mHeuristic + outMap[b].mActualFromStart;
+				return fOfA < fOfB;
+			});
+
+		// Set to current and moved from open to closed
+		current = *iter;
+		openSet.erase(iter);
+		outMap[current].mInOpenSet = false;
+		outMap[current].mInClosedSet = true;
+
+	} while (current != goal);
+
+	// return booling for path found
+	return (current == goal) ? true : false;
+};
+
