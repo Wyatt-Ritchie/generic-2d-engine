@@ -4,12 +4,14 @@
 #include "SDL_image.h"
 #include "Math.h"
 #include "BGSpriteComponent.h"
+#include "AudioSystem.h"
 #include <iostream>
 #include <vector>
 Game::Game() : mWindow(nullptr),
 			   mRenderer(nullptr), 
 			   mIsRunning(true),
-			   mUpdatingActors(false)
+			   mUpdatingActors(false),
+			   mAudioSystem(nullptr)
 {
 	
 }
@@ -58,6 +60,18 @@ bool Game::Initialize()
 
 	int flags = IMG_INIT_PNG;
 	int imgResult = IMG_Init(flags);
+
+	// Initialize audio system
+	mAudioSystem = new AudioSystem(this);
+	if (!mAudioSystem->Initialize())
+	{
+		SDL_Log("No audio system to initialize.");
+		mAudioSystem->ShutDown();
+		delete mAudioSystem;
+		mAudioSystem = nullptr;
+		return false;
+	}
+	
 
 	// Call the Load data function
 	LoadData();
@@ -127,6 +141,8 @@ void Game::UpdateGame()
 	}
 	mTicksCount = SDL_GetTicks();
 
+	// Update the audio system
+	mAudioSystem->Update(deltaTime);
 
 	// update all actors
 
@@ -316,6 +332,8 @@ void Game::ShutDown()
 	UnloadData();
 	std::cout << "Data Unloaded" << std::endl;
 	IMG_Quit();
+	std::cout << "Audio system shutdown called" << std::endl;
+	mAudioSystem->ShutDown();
 	// shut down renderer
 	SDL_DestroyRenderer(mRenderer);
 	std::cout << "Renderer Destroyed" << std::endl;

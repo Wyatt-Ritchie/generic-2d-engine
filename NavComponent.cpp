@@ -31,3 +31,10 @@ void NavComponent::TurnTo(const Vector2& pos)
 
 	mOwner->SetRotation(angle);
 }
+
+Vector2 NavComponent::GetNextPoint()
+{
+	// This is not the correct implementation. 
+	// This is simply a placeholder 
+	return mOwner->GetPosition();
+}

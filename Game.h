@@ -23,6 +23,7 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 
 	SDL_Texture* GetTexture(const std::string& fileName);
+	class AudioSystem* GetAudioSystem() { return mAudioSystem; }
 
 	//shutdown game loop
 	void ShutDown();
@@ -47,6 +48,9 @@ private:
 
 	// SDL renderer
 	SDL_Renderer* mRenderer;
+
+	// FMOD audio system
+	class AudioSystem* mAudioSystem;
 
 	// vectors containing active actors and pending actors
 	std::vector<class Actor*> mActors;
