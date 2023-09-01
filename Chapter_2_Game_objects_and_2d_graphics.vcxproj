@@ -151,6 +151,7 @@
     <ClCompile Include="NavComponent.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="SoundEvent.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TileMapComponent.cpp" />
   </ItemGroup>
@@ -169,6 +170,7 @@
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="NavComponent.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="SoundEvent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TileMapComponent.h" />
   </ItemGroup>

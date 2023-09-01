@@ -1,6 +1,8 @@
 #pragma once
 #include <unordered_map>
 #include <string>
+#include "SoundEvent.h"
+
 namespace FMOD
 {
 	class System;
@@ -19,7 +21,7 @@ class AudioSystem
 public:
 	AudioSystem(class Game* game);
 	~AudioSystem();
-
+	
 	bool Initialize();
 	void ShutDown();
 
@@ -30,12 +32,20 @@ public:
 	void UnloadBank(const std::string& name);
 	void UnloadAllBanks();
 
-	void PlayEvent(const std::string& name);
+	SoundEvent PlayEvent(const std::string& name);
 
-	//FMOD::System* getLowLevelSystem() const { return mLowLevelSystem; }
+	// Getters and setters
+	void IncrementNextID() { sNextID++; }
+	int GetNextID() const { return sNextID; }
+
+protected:
+	friend class SoundEvent;
+	FMOD::Studio::EventInstance* GetEventInstance(unsigned int ID);
 private:
+	// game member variable
 	class Game* mGame;
-
+	// setting the ID for the next event instance
+	static int sNextID;
 	//FMOD 
 	FMOD::Studio::System* mSystem;
 	//FMOD low level 
@@ -47,5 +57,7 @@ private:
 	// Map of event name to event description. The string is the name assigned
 	// by FMOD for the event. 
 	std::unordered_map<std::string, FMOD::Studio::EventDescription*> mEvents;
+	// Maps unsigned ints to event instances
+	std::unordered_map<unsigned int, FMOD::Studio::EventInstance*> mEventInstances;
 };
 

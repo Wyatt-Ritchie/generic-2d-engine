@@ -3,15 +3,18 @@
 #include <fmod_studio.hpp>
 #include <fmod_errors.h>
 #include <vector>
+
 AudioSystem::AudioSystem(Game* game) : mGame(game)
 									  ,mSystem(nullptr)
-									  ,mLowLevelSystem(nullptr)
+									  ,mLowLevelSystem(nullptr)								  
 {}
 
 AudioSystem::~AudioSystem()
 {
 	ShutDown();
 }
+
+int AudioSystem::sNextID = 0;
 
 bool AudioSystem::Initialize()
 {
@@ -53,6 +56,29 @@ bool AudioSystem::Initialize()
 
 void AudioSystem::Update(float deltaTime)
 {
+	// find any stopped event instances
+	std::vector<unsigned int> done;
+
+	for (auto& iter : mEventInstances)
+	{
+		FMOD::Studio::EventInstance* e = iter.second;
+		// Get state of the event
+		FMOD_STUDIO_PLAYBACK_STATE state;
+		e->getPlaybackState(&state);
+
+		if (state == FMOD_STUDIO_PLAYBACK_STOPPED)
+		{
+			// release the event and add ID to done
+			e->release();
+			done.emplace_back(iter.first);
+		}
+	}
+
+	for (auto id : done)
+	{
+		mEventInstances.erase(id);
+	}
+
 	if (mSystem)
 	{
 		mSystem->update();
@@ -160,8 +186,22 @@ void AudioSystem::UnloadAllBanks()
 	mEvents.clear();
 }
 
-void AudioSystem::PlayEvent(const std::string& name)
+FMOD::Studio::EventInstance* AudioSystem::GetEventInstance(unsigned int ID)
 {
+	auto iter = mEventInstances.find(ID);
+	if (iter != mEventInstances.end())
+	{
+		return iter->second;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+SoundEvent AudioSystem::PlayEvent(const std::string& name)
+{
+	unsigned int retID = 0;
 	// Make sure event exists
 	auto iter = mEvents.find(name);
 	if (iter != mEvents.end())
@@ -169,16 +209,18 @@ void AudioSystem::PlayEvent(const std::string& name)
 		//Create instance of the event
 		FMOD::Studio::EventInstance* event = nullptr;
 		iter->second->createInstance(&event);
+		
 		if (event)
 		{
 			// start the event instance
 			event->start();
-			// release schedules destruction of the event
-			// instance when it stops.
-			// (non looping events automatically stops)
-			event->release();
+			//Get the next ID and add it to the map
+			IncrementNextID();
+			retID = sNextID;
+			mEventInstances.emplace(retID, event);
 		}
 	}
+	return SoundEvent(this, retID);
 }
 
 void AudioSystem::ShutDown()
