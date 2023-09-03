@@ -34,6 +34,12 @@ public:
 
 	SoundEvent PlayEvent(const std::string& name);
 
+	// Functions for controlling the buses
+	float GetBusVolume(const std::string& name) const;
+	bool GetBusPaused(const std::string& name) const;
+	void SetBusVolume(const std::string& name, float volume);
+	void SetBusPaused(const std::string& name, bool pause);
+
 	// Getters and setters
 	void IncrementNextID() { sNextID++; }
 	int GetNextID() const { return sNextID; }
@@ -59,5 +65,7 @@ private:
 	std::unordered_map<std::string, FMOD::Studio::EventDescription*> mEvents;
 	// Maps unsigned ints to event instances
 	std::unordered_map<unsigned int, FMOD::Studio::EventInstance*> mEventInstances;
+	// Map of buses
+	std::unordered_map<std::string, FMOD::Studio::Bus*> mBuses;
 };
 

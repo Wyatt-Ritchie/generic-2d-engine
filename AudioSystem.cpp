@@ -116,6 +116,26 @@ void AudioSystem::LoadBank(const std::string& name)
 		int numEvents = 0;
 		bank->getEventCount(&numEvents);
 
+		// Get the number of buses in the bank
+		int numBus = 0;
+		bank->getBusCount(&numBus);
+
+		if (numBus > 0)
+		{
+			// Get the list of buses
+			std::vector<FMOD::Studio::Bus*> buses(numBus);
+			bank->getBusList(buses.data(), numBus, &numBus);
+			char busName[maxPathLength];
+			for (int i = 0; i < numBus; i++)
+			{
+				FMOD::Studio::Bus* b = buses[i];
+				// Get the path to the bus
+				b->getPath(busName, maxPathLength, nullptr);
+				// Add the bus to the map
+				mBuses.emplace(busName, b);
+			}
+		}
+
 		if (numEvents > 0)
 		{
 			// Get list of event descriptions in this bank
@@ -221,6 +241,50 @@ SoundEvent AudioSystem::PlayEvent(const std::string& name)
 		}
 	}
 	return SoundEvent(this, retID);
+}
+
+float AudioSystem::GetBusVolume(const std::string& name) const
+{
+	float busVol = 0.0f;
+	auto iter = mBuses.find(name);
+
+	if (iter != mBuses.end())
+	{
+		iter->second->getVolume(&busVol);
+	}
+	return busVol;
+}
+
+bool AudioSystem::GetBusPaused(const std::string& name) const
+{
+	bool busPause = false;
+	auto iter = mBuses.find(name);
+
+	if (iter != mBuses.end())
+	{
+		iter->second->getPaused(&busPause);
+	}
+	return busPause;
+}
+
+void AudioSystem::SetBusVolume(const std::string& name, float volume)
+{
+	auto iter = mBuses.find(name);
+
+	if (iter != mBuses.end())
+	{
+		iter->second->setVolume(volume);
+	}
+}
+
+void AudioSystem::SetBusPaused(const std::string& name, bool pause)
+{
+	auto iter = mBuses.find(name);
+
+	if (iter != mBuses.end())
+	{
+		iter->second->setPaused(pause);
+	}
 }
 
 void AudioSystem::ShutDown()
