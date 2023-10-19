@@ -2,7 +2,9 @@
 #include "Actor.h"
 #include "SpriteComponent.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 #include "Math.h"
+#include "Font.h"
 #include "BGSpriteComponent.h"
 #include "AudioSystem.h"
 #include <iostream>
@@ -25,6 +27,13 @@ bool Game::Initialize()
 		// reutrn false and a c-style string error message to the console
 		SDL_Log("Unable to initialize the SDL: %s", SDL_GetError());
 		return false;
+	}
+
+	// Initialize SDL TTF
+	int ttfResult = TTF_Init();
+	if (ttfResult != 0)
+	{
+		SDL_Log("Unable to initialize TTD: %s", TTF_GetError());
 	}
 
 	// create a window
@@ -273,6 +282,33 @@ SDL_Texture* Game::GetTexture(const std::string& fileName)
 	return tex;
 }
 
+Font* Game::GetFont(const std::string& fileName)
+{
+	
+	auto iter = mFonts.find(fileName);
+
+	if (iter != mFonts.end())
+	{
+		return iter->second;
+	}
+	else
+	{
+		Font* font = new Font(this);
+		if (font->Load(fileName))
+		{
+			mFonts.emplace(fileName, font);
+		}
+		else
+		{
+			font->Unload();
+			delete font;
+			font = nullptr;
+		}
+		return font;
+	}
+
+}
+
 void Game::LoadData()
 {
 	// Set temp background 
@@ -340,6 +376,9 @@ void Game::ShutDown()
 	// destroy the window
 	SDL_DestroyWindow(mWindow);
 	std::cout << "Window Destroyed" << std::endl;
+	// Shut down the TTF
+	TTF_Quit();
+	std::cout << "TTF closed" << std::endl;
 	// close the sdl with quit
 	SDL_Quit();
 	std::cout << "SDL closed" << std::endl;

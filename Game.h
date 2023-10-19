@@ -21,8 +21,12 @@ public:
 	void RemoveActor(class Actor* actor);
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);
-
+	// Function for retrieving textures
 	SDL_Texture* GetTexture(const std::string& fileName);
+	// Function for retrieving fonts
+	class Font* GetFont(const std::string& fileName);
+	// Function for returning the renderer
+	SDL_Renderer* GetRenderer() const { return mRenderer; }
 	class AudioSystem* GetAudioSystem() { return mAudioSystem; }
 
 	//shutdown game loop
@@ -58,7 +62,10 @@ private:
 	std::vector<class SpriteComponent*> mSprites;
 
 	int mTicksCount;
+	// Map of textures
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
+	// Map of fonts
+	std::unordered_map<std::string, Font*> mFonts;
 	
 	bool mUpdatingActors;
 
