@@ -7,6 +7,8 @@
 #include "Font.h"
 #include "BGSpriteComponent.h"
 #include "AudioSystem.h"
+#include "UIScreen.h"
+#include "TitleText.h"
 #include <iostream>
 #include <vector>
 Game::Game() : mWindow(nullptr),
@@ -15,7 +17,7 @@ Game::Game() : mWindow(nullptr),
 			   mUpdatingActors(false),
 			   mAudioSystem(nullptr)
 {
-	
+	DrawCalled = false;
 }
 
 bool Game::Initialize()
@@ -187,6 +189,19 @@ void Game::UpdateGame()
 		delete actor;
 	}
 
+	for (auto ui : mUIStack)
+	{
+		if (ui->GetState() == UIScreen::EActive)
+		{
+			ui->Update(deltaTime);
+		}
+	}
+	for(auto ui : mUIStack)
+		if (ui->GetState() == UIScreen::EClosing)
+		{
+			delete ui;
+		}
+
 }
 
 void Game::GenerateOutput() 
@@ -200,6 +215,12 @@ void Game::GenerateOutput()
 	);
 
 	SDL_RenderClear(mRenderer);
+
+	for (auto ui : mUIStack)
+	{
+		ui->Draw(mRenderer);
+	}
+	SDL_RenderPresent(mRenderer);
 
 	// Add stuff to be rendered
 	for (auto sprite : mSprites)
@@ -320,7 +341,7 @@ void Game::LoadData()
 	* 4. Get textures, then set textures.
 	* 5. Optional if there are more than one background repeat and set scroll speeds if desired.
 	*/
-	
+	TitleText* text = new TitleText(this);
 }
 
 void Game::UnloadData()
@@ -360,6 +381,11 @@ void Game::RemoveActor(Actor* actor)
 		std::iter_swap(iter, mActors.end() - 1);
 		mActors.pop_back();
 	}
+}
+
+void Game::PushUI(UIScreen* screen)
+{
+	mUIStack.emplace_back(screen);
 }
 
 void Game::ShutDown()

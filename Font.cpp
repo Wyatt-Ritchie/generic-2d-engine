@@ -6,6 +6,10 @@ Font::Font(Game* game) : mGame(game)
 
 }
 
+Font::~Font()
+{
+}
+
 bool Font::Load(const std::string& filename)
 {
 	// Support these font sizes
@@ -21,12 +25,17 @@ bool Font::Load(const std::string& filename)
 		TTF_Font* font = TTF_OpenFont(filename.c_str(), size);
 		if (font == nullptr)
 		{
+			SDL_Log("Error from TTF_Font: %s\n", TTF_GetError());
 			SDL_Log("Failed to load font %s in size %d", filename.c_str(), size);
 			return false;
 		}
 		mFontData.emplace(size, font);
 	}
 	return true;
+}
+
+void Font::Unload()
+{
 }
 
 SDL_Texture* Font::RenderText(const std::string& text, const Vector3& color, int pointSize)

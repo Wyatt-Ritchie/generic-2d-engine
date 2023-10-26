@@ -29,6 +29,13 @@ public:
 	SDL_Renderer* GetRenderer() const { return mRenderer; }
 	class AudioSystem* GetAudioSystem() { return mAudioSystem; }
 
+	// Return entire UI stack by reference
+	const std::vector<class UIScreen*>& GetUIStack() { return mUIStack; };
+
+	// Push specified UIScreen onto stack
+	void PushUI(class UIScreen* screen);
+
+
 	//shutdown game loop
 	void ShutDown();
 private:
@@ -66,8 +73,11 @@ private:
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 	// Map of fonts
 	std::unordered_map<std::string, Font*> mFonts;
+
+	// UI screen stack for the game
+	std::vector<class UIScreen*> mUIStack;
 	
 	bool mUpdatingActors;
-
+	bool DrawCalled;
 };
 
