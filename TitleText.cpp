@@ -1,5 +1,6 @@
 #include "TitleText.h"
 #include "Font.h"
+#include <memory>
 
 TitleText::TitleText(Game* game) : UIScreen(game)
 								  ,mText("Hello World")
@@ -9,7 +10,7 @@ TitleText::TitleText(Game* game) : UIScreen(game)
 								  ,mTexWidth(0)
 {
 	mFont = new Font(mGame);
-	const std::string path = "CaviarDreams.ttf";
+	const std::string path = "Assets/CaviarDreams.ttf";
 	mFont->Load(path);
 	SetPosition(Vector2(500.0f, 300.0f));
 	mTexture = mFont->RenderText(mText, Color::Red, 56);
@@ -22,7 +23,7 @@ TitleText::~TitleText()
 
 void TitleText::Draw(SDL_Renderer* renderer)
 {
-	
+
 	if (mTexture)
 	{
 		SDL_Rect r;

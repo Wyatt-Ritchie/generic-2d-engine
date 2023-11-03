@@ -8,6 +8,7 @@ Font::Font(Game* game) : mGame(game)
 
 Font::~Font()
 {
+	SDL_Log("Font deleted!");
 }
 
 bool Font::Load(const std::string& filename)
