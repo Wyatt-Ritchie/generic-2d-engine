@@ -155,6 +155,7 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="SoundEvent.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TileMapComponent.cpp" />
     <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="UIScreen.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="SoundEvent.h" />
     <ClInclude Include="SpriteComponent.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="TileMapComponent.h" />
     <ClInclude Include="TitleText.h" />
     <ClInclude Include="UIScreen.h" />

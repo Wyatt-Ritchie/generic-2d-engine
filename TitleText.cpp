@@ -8,12 +8,13 @@ TitleText::TitleText(Game* game) : UIScreen(game)
 								  ,mTexture(nullptr)
 								  ,mTexHeight(0)
 								  ,mTexWidth(0)
+								  ,mDrawBox(true)
 {
 	mFont = new Font(mGame);
 	const std::string path = "Assets/CaviarDreams.ttf";
 	mFont->Load(path);
 	SetPosition(Vector2(500.0f, 300.0f));
-	mTexture = mFont->RenderText(mText, Color::Red, 56);
+	mTexture = mFont->RenderText(mText, Color::Red, 20);
 	SDL_QueryTexture(mTexture, nullptr, nullptr, &mTexWidth, &mTexHeight);
 }
 
@@ -44,5 +45,12 @@ void TitleText::Draw(SDL_Renderer* renderer)
 			nullptr,
 			SDL_FLIP_NONE);
 
+		if (!mDrawBox)
+		{
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			SDL_RenderDrawRect(renderer, &r);
+		}
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderDrawLine(renderer, r.x, r.y + 35, r.x + 50, r.y + 35);
 	}
 }

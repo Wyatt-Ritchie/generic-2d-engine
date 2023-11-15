@@ -1,5 +1,6 @@
 #include "UIScreen.h"
 #include "Game.h"
+#include "Font.h"
 
 UIScreen::UIScreen(Game* game) : mGame(game)
 								,mFont(nullptr)
@@ -12,6 +13,11 @@ UIScreen::UIScreen(Game* game) : mGame(game)
 
 UIScreen::~UIScreen()
 {
+	if (mFont)
+	{
+		mFont->Unload();
+		delete mFont;
+	}
 }
 
 void UIScreen::Update(float deltaTime)

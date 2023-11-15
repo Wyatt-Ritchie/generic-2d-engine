@@ -37,6 +37,10 @@ bool Font::Load(const std::string& filename)
 
 void Font::Unload()
 {
+	for (auto& font : mFontData)
+	{
+		TTF_CloseFont(font.second);
+	}
 }
 
 SDL_Texture* Font::RenderText(const std::string& text, const Vector3& color, int pointSize)

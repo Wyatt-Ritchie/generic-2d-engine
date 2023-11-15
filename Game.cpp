@@ -9,6 +9,7 @@
 #include "AudioSystem.h"
 #include "UIScreen.h"
 #include "TitleText.h"
+#include "TextBox.h"
 #include <iostream>
 #include <vector>
 Game::Game() : mWindow(nullptr),
@@ -342,6 +343,9 @@ void Game::LoadData()
 	* 5. Optional if there are more than one background repeat and set scroll speeds if desired.
 	*/
 	TitleText* text = new TitleText(this);
+	TextBox* box = new TextBox(this);
+	box->LoadText("Assets/Lorem_Ipsum.txt");
+	box->LoadFont("Assets/Caviar_Dreams_bold.ttf");
 }
 
 void Game::UnloadData()
@@ -361,6 +365,14 @@ void Game::UnloadData()
 	}
 	mTextures.clear();
 	std::cout << "Textures cleared" << std::endl;
+
+	while (!mUIStack.empty())
+	{
+		delete mUIStack.back();
+		mUIStack.pop_back();
+	}
+	mFonts.clear();
+	
 }
 
 void Game::RemoveActor(Actor* actor)
