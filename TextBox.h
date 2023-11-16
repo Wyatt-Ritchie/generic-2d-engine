@@ -10,10 +10,10 @@ public:
 	// Load the text from the file, and add each word into 
 	// the mWords vector by a white space delimeter.
 	// Keep formating characters such as \n and \t
-	void LoadText(std::string filePath);
+	void LoadText(const std::string& filePath);
 
 	// Load the font from the intended file into the mFont object
-	void LoadFont(std::string filePath);
+	void LoadFont(const std::string& filePath);
 
 	// Draw
 	void Draw(SDL_Renderer* renderer) override;

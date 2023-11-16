@@ -342,10 +342,9 @@ void Game::LoadData()
 	* 4. Get textures, then set textures.
 	* 5. Optional if there are more than one background repeat and set scroll speeds if desired.
 	*/
-	TitleText* text = new TitleText(this);
 	TextBox* box = new TextBox(this);
 	box->LoadText("Assets/Lorem_Ipsum.txt");
-	box->LoadFont("Assets/Caviar_Dreams_bold.ttf");
+	box->LoadFont("Assets/Caviar_Dreams_Bold.ttf");
 }
 
 void Game::UnloadData()

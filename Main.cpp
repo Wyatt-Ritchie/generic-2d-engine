@@ -2,7 +2,7 @@
 #include <iostream>
 int main(int argc, char* argv[])
 {
-	srand(time(NULL));
+	time_t srand(time(NULL));
 	Game game;
 	bool success = game.Initialize();
 	std::cout << "Game initialized" << std::endl;

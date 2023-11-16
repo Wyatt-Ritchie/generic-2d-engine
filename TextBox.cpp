@@ -22,7 +22,7 @@ TextBox::~TextBox()
 {
 }
 
-void TextBox::LoadText(std::string filePath)
+void TextBox::LoadText(const std::string& filePath)
 {
 	// Open the file and add each word into the words vector
 	std::ifstream file(filePath);
@@ -44,7 +44,7 @@ void TextBox::LoadText(std::string filePath)
 	return;
 }
 
-void TextBox::LoadFont(std::string filePath)
+void TextBox::LoadFont(const std::string& filePath)
 {
 	// Call the Get Font from the game class
 	// this puts the font in the font map for 
@@ -64,7 +64,7 @@ void TextBox::LoadFont(std::string filePath)
 
 Vector2 TextBox::GetBoxDimensions()
 {
-	return Vector2((float)GetBoxWidth(), (float)GetBoxHeight());
+	return Vector2(static_cast<float>(mBoxWidth), static_cast<float>(mBoxHeight));
 }
 
 void TextBox::Draw(SDL_Renderer* renderer)
@@ -74,15 +74,16 @@ void TextBox::Draw(SDL_Renderer* renderer)
 	Vector2 pos = GetBoxPosistion();
 
 	SDL_Rect r;
-	r.w = dim.x;
-	r.h = dim.y;
-	r.x = pos.x;
-	r.y = pos.y;
+	r.w = (int)dim.x;
+	r.h = (int)dim.y;
+	r.x = (int)pos.x;
+	r.y = (int)pos.y;
 
 	int x = r.x + r.w;
 	int y = 0;
 
 	for (const auto& word : mWords) {
+		//if (y >= mBoxHeight) return;
 		// Render each word
 		mTexture = mFont->RenderText(word, Color::White, mFontSize);
 
@@ -95,7 +96,7 @@ void TextBox::Draw(SDL_Renderer* renderer)
 			x = 20;
 			y += mTexHeight + 5;  // Add some spacing between lines
 		}
-		if (y >= mBoxHeight) return;
+		
 		// Render the text
 		SDL_Rect dstRect = { x, y, mTexWidth, mTexHeight };
 		SDL_RenderCopyEx(renderer,

@@ -35,6 +35,8 @@ public:
 	// Push specified UIScreen onto stack
 	void PushUI(class UIScreen* screen);
 
+	int GetScreenHeight() const { return mScreenHeight; }
+	int GetScreenWidth() const { return mScreenWidth; }
 
 	//shutdown game loop
 	void ShutDown();
@@ -56,6 +58,10 @@ private:
 
 	// game running bool
 	bool mIsRunning;
+
+	int mScreenWidth;
+
+	int mScreenHeight;
 
 	// SDL renderer
 	SDL_Renderer* mRenderer;

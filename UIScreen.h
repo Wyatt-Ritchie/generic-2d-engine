@@ -1,7 +1,9 @@
 #pragma once
 #include "Math.h"
+#include <functional>
 #include <string>
 #include "SDL.h"
+#include <vector>
 class UIScreen
 {
 public:
@@ -23,6 +25,10 @@ public:
 	void SetTitle(const std::string& text,
 		const Vector3& color = Color::White,
 		int pointSize = 30);
+
+	// Function for adding buttons
+	void AddButton(const std::string& name,
+		std::function<void()> onClick);
 protected:
 	// Helper to drraw a texture
 	void DrawTexture(class Shader* shader, class Texture* texture,
@@ -33,8 +39,14 @@ protected:
 	class Font* mFont;
 	class Texture* mTitle;
 	Vector2 mTitlePos;
+	Vector2 mNextButtonPos;
 	// State
 	UIState mState;
+
+	// Vector of buttons
+	std::vector<class Button*> mButtons;
+	SDL_Texture* mButtonSelected;
+	SDL_Texture* mButtonUnSelected;
 private:
 
 };
