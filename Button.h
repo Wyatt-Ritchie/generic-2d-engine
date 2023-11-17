@@ -22,6 +22,9 @@ public:
 	// Called when button is clicked
 	void OnClick();
 
+	// Draw the button and associated text
+	void Draw(SDL_Texture* tex, SDL_Renderer* renderer);
+
 	// Getters/Setters
 	SDL_Texture* GetNameTexture() const { return mNameTexture; }
 	Font* GetFont() const { return mFont; }
@@ -39,7 +42,7 @@ public:
 private:
 	std::function<void()> mOnClick;
 	std::string mName;
-	class SDL_Texture* mNameTexture;
+	SDL_Texture* mNameTexture;
 	class Font* mFont;
 	Vector2 mPosition;
 	Vector2 mDimension;

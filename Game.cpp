@@ -10,13 +10,16 @@
 #include "UIScreen.h"
 #include "TitleText.h"
 #include "TextBox.h"
+#include "Button.h"
 #include <iostream>
 #include <vector>
 Game::Game() : mWindow(nullptr),
 			   mRenderer(nullptr), 
 			   mIsRunning(true),
 			   mUpdatingActors(false),
-			   mAudioSystem(nullptr)
+			   mAudioSystem(nullptr),
+			   mScreenHeight(768),
+	           mScreenWidth(1024)
 {
 	DrawCalled = false;
 }
@@ -44,8 +47,8 @@ bool Game::Initialize()
 		"Game Programming in C++ (Chapter 2)", // Window Title
 		100, // Top left x-coordinate of window
 		100, // top left y-coordinate of window
-		1024, // width of window
-		768, // height of window
+		mScreenWidth, // width of window
+		mScreenHeight, // height of window
 		0 // flags (0 for no flags set)
 	);
 
@@ -104,6 +107,11 @@ void Game::ProcessInput()
 		case SDL_QUIT:
 			mIsRunning = false;
 			break;
+		case SDL_MOUSEBUTTONDOWN:
+			if (!mUIStack.empty())
+			{
+				mUIStack.back()->HandleKeyPress(event.button.button);
+			}
 		}
 	}
 
@@ -114,12 +122,20 @@ void Game::ProcessInput()
 		mIsRunning = false;
 	}
 
+	// Process input for actors
 	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
 		actor->ProcessInput(state);
 	}
 	mUpdatingActors = false;
+
+	// Process input for UI screens
+	for (auto& ui : mUIStack)
+	{
+		ui->ProcessInput(state);
+	}
+
 }
 
 // implementation of the game loop function. 
@@ -342,9 +358,18 @@ void Game::LoadData()
 	* 4. Get textures, then set textures.
 	* 5. Optional if there are more than one background repeat and set scroll speeds if desired.
 	*/
-	TextBox* box = new TextBox(this);
-	box->LoadText("Assets/Lorem_Ipsum.txt");
-	box->LoadFont("Assets/Caviar_Dreams_Bold.ttf");
+
+	
+
+	Font* font = new Font(this);
+	font->Load("Assets/Caviar_Dreams_Bold.ttf");
+	UIScreen* ui = new UIScreen(this);
+	ui->SetFont(font);
+	const std::string name = "Button";
+	
+	ui->LoadSelectedTex("Assets/blue_brick.png");
+	ui->LoadUnSelectedTex("Assets/red_brick.png");
+	ui->AddButton(name, &foo);
 }
 
 void Game::UnloadData()
@@ -419,4 +444,10 @@ void Game::ShutDown()
 	// close the sdl with quit
 	SDL_Quit();
 	std::cout << "SDL closed" << std::endl;
+}
+
+
+void foo()
+{
+	SDL_Log("Clicked");
 }

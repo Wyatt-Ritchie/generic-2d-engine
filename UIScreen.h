@@ -29,6 +29,11 @@ public:
 	// Function for adding buttons
 	void AddButton(const std::string& name,
 		std::function<void()> onClick);
+
+	void SetFont(class Font* font) { mFont = font; }
+
+	void LoadSelectedTex(const std::string path);
+	void LoadUnSelectedTex(const std::string path);
 protected:
 	// Helper to drraw a texture
 	void DrawTexture(class Shader* shader, class Texture* texture,

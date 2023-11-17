@@ -87,3 +87,4 @@ private:
 	bool DrawCalled;
 };
 
+void foo();
