@@ -43,6 +43,8 @@ private:
 	std::function<void()> mOnClick;
 	std::string mName;
 	SDL_Texture* mNameTexture;
+	int mNameTexWidth;
+	int mNameTexHeight;
 	class Font* mFont;
 	Vector2 mPosition;
 	Vector2 mDimension;

@@ -8,6 +8,8 @@ Button::Button(const std::string& name, Font* font, std::function<void()> onClic
 																															,mDimension(dim)
 																															,mHighlighted(false)
 																															,mOnClick(onClick)
+																															,mNameTexHeight(0)
+																															,mNameTexWidth(0)
 {
 	SetName(name);
 	SDL_Log("Button named: [%s] has been created.", name.c_str());
@@ -33,7 +35,8 @@ void Button::SetName(const std::string& name)
 			SDL_DestroyTexture(mNameTexture);
 			mNameTexture = nullptr;
 		}
-		mNameTexture = mFont->RenderText(mName, Color::White, 20);
+		mNameTexture = mFont->RenderText(mName, Color::White, 16);
+		SDL_QueryTexture(mNameTexture, NULL, NULL, &mNameTexWidth, &mNameTexHeight);
 	}
 }
 
@@ -82,8 +85,8 @@ void Button::Draw(SDL_Texture* tex, SDL_Renderer* renderer)
 	}
 
 	SDL_Rect dstRect;
-	dstRect.w = 40;
-	dstRect.h = 32;
+	dstRect.w = mNameTexWidth;
+	dstRect.h = mNameTexHeight;
 	dstRect.x = r.x + (r.w - dstRect.w)/2;
 	dstRect.y = r.y + (r.h - dstRect.h)/2;
 
