@@ -234,12 +234,13 @@ void Game::GenerateOutput()
 
 	SDL_RenderClear(mRenderer);
 
-	// Add stuff to be rendered
+	// Render the game sprites
 	for (auto sprite : mSprites)
 	{
 		sprite->Draw(mRenderer);
 	}
 
+	// Render the games active UI screens
 	for (auto ui : mUIStack)
 	{
 		ui->Draw(mRenderer);
