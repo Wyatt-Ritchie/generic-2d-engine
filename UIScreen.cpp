@@ -141,6 +141,6 @@ void UIScreen::LoadUnSelectedTex(const std::string path)
 	mButtonUnSelected = mGame->GetTexture(path);
 }
 
-void UIScreen::DrawTexture(Shader* shader, Texture* texture, const Vector2& offset, float scale)
+void UIScreen::DrawTexture(SDL_Texture* texture, const Vector2& offset, float scale)
 {
 }

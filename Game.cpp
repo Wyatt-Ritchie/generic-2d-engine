@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Actor.h"
 #include "SpriteComponent.h"
+#include "TileMapComponent.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 #include "Math.h"
@@ -233,18 +234,19 @@ void Game::GenerateOutput()
 
 	SDL_RenderClear(mRenderer);
 
+	// Add stuff to be rendered
+	for (auto sprite : mSprites)
+	{
+		sprite->Draw(mRenderer);
+	}
+
 	for (auto ui : mUIStack)
 	{
 		ui->Draw(mRenderer);
 	}
 	SDL_RenderPresent(mRenderer);
 
-	// Add stuff to be rendered
-	for (auto sprite : mSprites)
-	{
-		sprite->Draw(mRenderer);
-	}
-	SDL_RenderPresent(mRenderer);
+	
 }
 
 void Game::AddActor(Actor* actor)
@@ -370,6 +372,9 @@ void Game::LoadData()
 	ui->LoadSelectedTex("Assets/blue_brick.png");
 	ui->LoadUnSelectedTex("Assets/red_brick.png");
 	ui->AddButton(name, &foo);
+
+	Actor* actor = new Actor(this);
+	TileMapComponent* tc = new TileMapComponent(actor, 100);
 }
 
 void Game::UnloadData()

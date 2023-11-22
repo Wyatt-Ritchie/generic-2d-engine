@@ -10,6 +10,8 @@ TileMapComponent::TileMapComponent(Actor* actor, int DrawOrder) : SpriteComponen
 
 	// Order of the tilemaps is important!
 	// The layers are rendered back to front.
+	LoadData("Assets/Map_1.csv");
+	LoadTileSet("Assets/t-set.png");
 }
 
 
@@ -51,7 +53,7 @@ void TileMapComponent::LoadTileSet(std::string fileName)
 
 void TileMapComponent::Draw(SDL_Renderer* renderer)
 {
-	int row, col, n;
+	int row, col, n, horizontalFlip, verticalFlip, diagonalFlip;
 	
 	SDL_Rect rDest;
 	SDL_Rect rSrc;
@@ -59,8 +61,8 @@ void TileMapComponent::Draw(SDL_Renderer* renderer)
 	rDest.w = 32;
 	rDest.h = 32;
 	// The width and height of the tile on the tile set
-	rSrc.w = 32;
-	rSrc.h = 32;
+	rSrc.w = 16;
+	rSrc.h = 16;
 
 	// This can probably be optimized out of using a tripple loop. Fine for now
 	if (mTileSet)
@@ -71,13 +73,16 @@ void TileMapComponent::Draw(SDL_Renderer* renderer)
 			{
 				for (int k=0; k<mTileMaps[i][j].size(); k++)
 				{
-					n = mTileMaps[i][j][k];
+					/*horizontalFlip = mTileMaps[i][j][k] & 0x80000000;
+					verticalFlip = mTileMaps[i][j][k] & 0x40000000;
+					diagonalFlip = mTileMaps[i][j][k] & 0x20000000;*/
+					n = mTileMaps[i][j][k] & ~(0x80000000 | 0x40000000 | 0x20000000);
 
 					// calculating the position on the tileset from
 					// the int provided in the map. This 
 					// particular tileset is 8 tiles wide
-					col = n / 8;
-					row = n % 8;
+					col = n / 32;
+					row = n % 32;
 					if (mTileMaps[i][j][k] == -1)
 					{
 						// Draw
@@ -94,12 +99,12 @@ void TileMapComponent::Draw(SDL_Renderer* renderer)
 					else
 					{
 						// Center position of the tile on the screen (32px, based on scale)
-						rDest.x = k*32;
-						rDest.y = j*32;
+						rDest.x = k* 32;
+						rDest.y = j* 32;
 
 						// The tile to be drawn (each tile is 32x32 pixel)
-						rSrc.x = row * 32;
-						rSrc.y = col * 32;
+						rSrc.x = row * 16;
+						rSrc.y = col * 16;
 					}
 					// Draw
 					SDL_RenderCopyEx(renderer,

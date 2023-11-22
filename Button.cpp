@@ -35,7 +35,7 @@ void Button::SetName(const std::string& name)
 			SDL_DestroyTexture(mNameTexture);
 			mNameTexture = nullptr;
 		}
-		mNameTexture = mFont->RenderText(mName, Color::White, 16);
+		mNameTexture = mFont->RenderText(mName, Color::White, 30);
 		SDL_QueryTexture(mNameTexture, NULL, NULL, &mNameTexWidth, &mNameTexHeight);
 	}
 }
