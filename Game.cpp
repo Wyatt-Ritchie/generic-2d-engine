@@ -13,6 +13,7 @@
 #include "TextBox.h"
 #include "Button.h"
 #include <iostream>
+#include <algorithm>
 #include <vector>
 Game::Game() : mWindow(nullptr),
 			   mRenderer(nullptr), 
