@@ -46,7 +46,7 @@ bool Game::Initialize()
 
 	// create a window
 	mWindow = SDL_CreateWindow(
-		"Game Programming in C++ (Chapter 2)", // Window Title
+		"2D-Game Engine", // Window Title
 		100, // Top left x-coordinate of window
 		100, // top left y-coordinate of window
 		mScreenWidth, // width of window
