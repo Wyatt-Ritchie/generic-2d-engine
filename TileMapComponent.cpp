@@ -17,6 +17,7 @@ TileMapComponent::TileMapComponent(Actor* actor, int DrawOrder) : SpriteComponen
 
 void TileMapComponent::LoadData(std::string fileName)
 {
+	int horizontalFlip, verticalFlip, diagonalFlip;
 	// start by loading the csv file
 	std::ifstream file;
 	file.open(fileName);
@@ -25,14 +26,41 @@ void TileMapComponent::LoadData(std::string fileName)
 	// read the csv file
 	// and store int** in mTileMaps
 
-	std::vector<std::vector<int>> arr;
+	std::vector<std::vector<Tile>> arr;
 	while (std::getline(file, tline))
 	{
-		std::vector<int> v;
+		std::vector<Tile> v;
 		std::stringstream s(tline);
 		while (std::getline(s, tval, ','))
 		{
-			v.push_back(std::stoi(tval));
+			// Determin the orientation of each time
+			Tile t;
+			t.mTilesetId = std::stoi(tval);
+
+			horizontalFlip = t.mTilesetId & 0x80000000;
+			verticalFlip = t.mTilesetId & 0x40000000;
+			diagonalFlip = t.mTilesetId & 0x20000000;
+			t.mTilesetId = t.mTilesetId & ~(0x80000000 | 0x40000000 | 0x20000000);
+			if (horizontalFlip == 0x80000000 && verticalFlip != 0x40000000)
+			{
+				t.mFlip = Math::PiOver2;
+			}
+			else if (horizontalFlip != 0x80000000 && verticalFlip == 0x40000000)
+			{
+
+				t.mFlip = Math::Pi;
+			}
+			else if (diagonalFlip == 0x20000000)
+			{
+
+				t.mFlip = Math::TwoPi;
+			}
+			else
+			{
+				t.mFlip = 0.0f;
+			}
+			
+			v.push_back(t);
 		}
 		arr.push_back(v);
 	}
@@ -53,7 +81,7 @@ void TileMapComponent::LoadTileSet(std::string fileName)
 
 void TileMapComponent::Draw(SDL_Renderer* renderer)
 {
-	int row, col, n, horizontalFlip, verticalFlip, diagonalFlip;
+	int row, col, n;
 	
 	SDL_Rect rDest;
 	SDL_Rect rSrc;
@@ -73,17 +101,15 @@ void TileMapComponent::Draw(SDL_Renderer* renderer)
 			{
 				for (int k=0; k<mTileMaps[i][j].size(); k++)
 				{
-					/*horizontalFlip = mTileMaps[i][j][k] & 0x80000000;
-					verticalFlip = mTileMaps[i][j][k] & 0x40000000;
-					diagonalFlip = mTileMaps[i][j][k] & 0x20000000;*/
-					n = mTileMaps[i][j][k] & ~(0x80000000 | 0x40000000 | 0x20000000);
+					Tile t = mTileMaps[i][j][k];
+					n = t.mTilesetId;
 
 					// calculating the position on the tileset from
 					// the int provided in the map. This 
 					// particular tileset is 8 tiles wide
 					col = n / 32;
 					row = n % 32;
-					if (mTileMaps[i][j][k] == -1)
+					if (t.mTilesetId == -1)
 					{
 						// Draw
 						rSrc.x = 0;
@@ -111,7 +137,7 @@ void TileMapComponent::Draw(SDL_Renderer* renderer)
 						mTileSet,
 						&rSrc,
 						&rDest,
-						-Math::ToDegrees(0.0f),
+						-Math::ToDegrees(t.mFlip),
 						nullptr,
 						SDL_FLIP_NONE);
 				}

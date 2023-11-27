@@ -1,7 +1,18 @@
 #pragma once
 #include "SpriteComponent.h"
 #include <string>
+#include "Math.h"
 #include <vector>
+
+struct Tile
+{
+    bool mTraversable = true;
+    int mTilesetId = -1;
+    Vector2 mDimension = Vector2(32.0f, 32.0f);
+    float mScale = 1.0f;
+    float mFlip = 0.0f;
+};
+
 class TileMapComponent : public SpriteComponent
 {
 public:
@@ -17,6 +28,6 @@ public:
 private:
     SDL_Texture* mTileSet;
 
-    std::vector<std::vector<std::vector<int>>> mTileMaps;
+    std::vector<std::vector<std::vector<Tile>>> mTileMaps;
 };
 
