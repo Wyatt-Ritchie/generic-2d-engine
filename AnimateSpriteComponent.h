@@ -1,6 +1,7 @@
 #pragma once
 #include "SpriteComponent.h"
 #include <vector>
+#include "Math.h"
 #include <string>
 class AnimateSpriteComponent : public SpriteComponent
 {
@@ -8,7 +9,9 @@ class AnimateSpriteComponent : public SpriteComponent
 	struct Animation
 	{
 		std::string mAnimName;
+		SDL_Texture* mSpriteSheet;
 		int mStartPos, mEndPos;
+		Vector2 mFrameSize;
 		bool mLoop;
 	};
 
@@ -17,20 +20,23 @@ public:
 
 	void Update(float deltaTime) override;
 
+	void Draw(SDL_Renderer* renderer) override;
+
 	void SetCurrentAnimation(const std::string animationName);
 
 	Animation GetCurrentAnimation() const { return mCurrentAnimation; }
 
-	void SetAnimationTextures(const std::vector<SDL_Texture*>& textures
-								,const std::string animName
-								,bool looping);
+	void SetAnimationTextures(SDL_Texture* spriteSheet
+		, const std::string animName
+		, const bool looping
+		, const Vector2 frameSize);
 
 	float GetAnimFPS() const { return mAnimFPS; };
-	void SetAnimFPS(float fps) { mAnimFPS = fps; };
+	void SetAnimFPS(const float fps) { mAnimFPS = fps; };
 
 private:
 	// All textures in the animation
-	std::vector<SDL_Texture*> mAnimTextures;
+	//std::vector<SDL_Texture*> mAnimSpriteSheets;
 
 	// all the animations
 	std::vector<Animation> mAnimations;
