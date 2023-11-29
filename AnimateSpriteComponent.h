@@ -17,12 +17,12 @@ public:
 
 	void Update(float deltaTime) override;
 
-	void SetCurrentAnimation(std::string animationName);
+	void SetCurrentAnimation(const std::string animationName);
 
-	Animation *GetCurrentAnimation() const { return mCurrentAnimation; }
+	Animation GetCurrentAnimation() const { return mCurrentAnimation; }
 
 	void SetAnimationTextures(const std::vector<SDL_Texture*>& textures
-								,std::string animName
+								,const std::string animName
 								,bool looping);
 
 	float GetAnimFPS() const { return mAnimFPS; };
@@ -33,9 +33,9 @@ private:
 	std::vector<SDL_Texture*> mAnimTextures;
 
 	// all the animations
-	std::vector<Animation*> mAnimations;
+	std::vector<Animation> mAnimations;
 
-	Animation *mCurrentAnimation;
+	Animation mCurrentAnimation;
 
 	const Uint8* state;
 
