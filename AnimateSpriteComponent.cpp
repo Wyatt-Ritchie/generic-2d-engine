@@ -3,10 +3,11 @@
 #include "Actor.h"
 
 AnimateSpriteComponent::AnimateSpriteComponent(Actor* actor, int drawOrder) : SpriteComponent(actor, drawOrder)
-																			, mCurrentFrame(0.0f)
-																			, mAnimFPS(10.0f)
-																			, mCurrentAnimation()
-																			, state(SDL_GetKeyboardState(NULL))
+, mCurrentFrame(0.0f)
+, mAnimFPS(10.0f)
+, mCurrentAnimation()
+, state(SDL_GetKeyboardState(NULL))
+, flip(SDL_FLIP_NONE)
 {
 	std::vector<Animation> mAnimations;
 	Animation tmp;
@@ -55,6 +56,7 @@ void AnimateSpriteComponent::SetAnimationTextures(SDL_Texture* spriteSheet
 
 	anim.mAnimName = animName;
 	anim.mLoop = looping;
+	anim.flip = false;
 	anim.mStartPos = 1;
 	anim.mEndPos = sheetWidth / static_cast<int>(frameSize.x);
 	anim.mSpriteSheet = spriteSheet;
@@ -83,7 +85,7 @@ void AnimateSpriteComponent::Draw(SDL_Renderer* renderer)
 	rSrc.w = static_cast<int>(mCurrentAnimation.mFrameSize.x);
 	rSrc.h = static_cast<int>(mCurrentAnimation.mFrameSize.y);
 
-	rSrc.x = static_cast<int>(mCurrentFrame) % static_cast<int>(mCurrentAnimation.mFrameSize.x) * static_cast<int>(mCurrentAnimation.mFrameSize.x);
+	rSrc.x = static_cast<int>(mCurrentFrame) % static_cast<int>(mCurrentAnimation.mFrameSize.x) * mCurrentAnimation.mFrameSize.x;
 	rSrc.y = 0;
 
 	// Draw
@@ -93,7 +95,7 @@ void AnimateSpriteComponent::Draw(SDL_Renderer* renderer)
 		&rDest,
 		-Math::ToDegrees(mOwner->GetRotation()),
 		nullptr,
-		SDL_FLIP_NONE);
+		flip);
 }
 
 void AnimateSpriteComponent::SetCurrentAnimation(const std::string animationName)

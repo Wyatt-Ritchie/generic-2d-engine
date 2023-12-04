@@ -8,11 +8,12 @@ class AnimateSpriteComponent : public SpriteComponent
 	// structure for representing a single animation
 	struct Animation
 	{
-		std::string mAnimName;
+		std::string mAnimName = "";
 		SDL_Texture* mSpriteSheet;
 		int mStartPos, mEndPos;
 		Vector2 mFrameSize;
-		bool mLoop;
+		bool mLoop = true;
+		bool flip = false;
 	};
 
 public:
@@ -44,6 +45,8 @@ private:
 	Animation mCurrentAnimation;
 
 	const Uint8* state;
+
+	SDL_RendererFlip flip;
 
 	// Current fram displayed
 	float mCurrentFrame;
