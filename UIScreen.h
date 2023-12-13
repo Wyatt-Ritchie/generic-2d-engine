@@ -1,5 +1,6 @@
 #pragma once
 #include "Math.h"
+#include <unordered_map>
 #include <functional>
 #include <string>
 #include "SDL.h"
@@ -15,7 +16,7 @@ public:
 	virtual void HandleKeyPress(int key);
 
 	// Tracks if the UI is active or closing
-	enum UIState{EActive, EClosing};
+	enum UIState { EActive, EClosing };
 	// Set state to closing
 	void Close();
 

@@ -29,6 +29,9 @@ public:
 	SDL_Renderer* GetRenderer() const { return mRenderer; }
 	class AudioSystem* GetAudioSystem() { return mAudioSystem; }
 
+	void ResizeWindow(class Vector2 size);
+
+
 	// Return entire UI stack by reference
 	const std::vector<class UIScreen*>& GetUIStack() { return mUIStack; };
 

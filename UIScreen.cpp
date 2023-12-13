@@ -9,7 +9,7 @@ UIScreen::UIScreen(Game* game) : mGame(game)
 								,mTitle(nullptr)
 								,mTitlePos(Vector2::Zero)
 								,mState(EActive)
-								,mNextButtonPos(Vector2(334, 334))
+								,mNextButtonPos(Vector2(64, 64))
 {
 	game->PushUI(this);
 }
@@ -31,6 +31,15 @@ UIScreen::~UIScreen()
 	{
 		SDL_DestroyTexture(mButtonUnSelected);
 	}
+
+	if (!mButtons.empty())
+	{
+		for (auto& b : mButtons)
+		{
+			delete b;
+		}
+		mButtons.clear();
+	}
 }
 
 void UIScreen::Update(float deltaTime)
@@ -43,15 +52,15 @@ void UIScreen::Draw(SDL_Renderer* renderer)
 	// Iterate through mButtons and draw each button
 	if (!mButtons.empty())
 	{
-		for (auto const & b : mButtons)
+		for (auto const& b : mButtons)
 		{
 			if (b->GetHighlighted())
 			{
-				b->Draw(mButtonSelected, renderer);
+				b->Draw(b->GetSelected(), renderer);
 			}
 			else
 			{
-				b->Draw(mButtonUnSelected, renderer);
+				b->Draw(b->GetUnSelected(), renderer);
 			}
 		}
 	}
@@ -65,7 +74,7 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 		// Get mouse position
 		int x, y;
 		uint32_t state = SDL_GetMouseState(&x, &y);
-		
+
 		Vector2 mousePos(static_cast<float>(x), static_cast<float>(y));
 		// Highlight any buttons
 		for (auto& b : mButtons)
@@ -73,7 +82,7 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 			if (b->ContainsPoint(mousePos))
 			{
 				b->SetHighlighted(true);
-				
+
 			}
 			else
 			{
@@ -81,7 +90,7 @@ void UIScreen::ProcessInput(const uint8_t* keys)
 			}
 		}
 
-		
+
 	}
 }
 
@@ -124,10 +133,11 @@ void UIScreen::AddButton(const std::string& name, std::function<void()> onClick)
 	SDL_QueryTexture(mButtonSelected, NULL, NULL, &a, &b);
 	dims.x = static_cast<float>(a);
 	dims.y = static_cast<float>(b);
-	
+
 
 	Button* button = new Button(name, mFont, onClick, mNextButtonPos, dims);
-	mNextButtonPos.y -= b + 20;
+	mNextButtonPos.y += b + 10;
+	button->SetSelectionTexts(mButtonSelected, mButtonUnSelected);
 	mButtons.emplace_back(button);
 }
 

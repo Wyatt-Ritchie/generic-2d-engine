@@ -2,22 +2,25 @@
 #include "Font.h"
 
 Button::Button(const std::string& name, Font* font, std::function<void()> onClick, const Vector2& pos, const Vector2& dim) : mName(name)
-																															,mFont(font)
-																															,mNameTexture(nullptr)
-																															,mPosition(pos)
-																															,mDimension(dim)
-																															,mHighlighted(false)
-																															,mOnClick(onClick)
-																															,mNameTexHeight(0)
-																															,mNameTexWidth(0)
+, mFont(font)
+, mNameTexture(nullptr)
+, mPosition(pos)
+, mDimension(dim)
+, mHighlighted(false)
+, mOnClick(onClick)
+, mNameTexHeight(0)
+, mNameTexWidth(0)
+, mFontSize(12)
 {
-	SetName(name);
+	if (name != "") SetName(name);
 	SDL_Log("Button named: [%s] has been created.", name.c_str());
+	if (!onClick) SDL_Log("null function");
 }
 
 Button::~Button()
 {
-	SDL_DestroyTexture(mNameTexture);
+	if (mNameTexture) SDL_DestroyTexture(mNameTexture);
+
 }
 
 void Button::SetName(const std::string& name)
@@ -28,6 +31,10 @@ void Button::SetName(const std::string& name)
 		return;
 	}
 	{
+		if (name == "")
+		{
+			return;
+		}
 		mName = name;
 
 		if (mNameTexture)
@@ -35,7 +42,7 @@ void Button::SetName(const std::string& name)
 			SDL_DestroyTexture(mNameTexture);
 			mNameTexture = nullptr;
 		}
-		mNameTexture = mFont->RenderText(mName, Color::White, 30);
+		mNameTexture = mFont->RenderText(mName, Color::White, mFontSize);
 		SDL_QueryTexture(mNameTexture, NULL, NULL, &mNameTexWidth, &mNameTexHeight);
 	}
 }
@@ -43,9 +50,9 @@ void Button::SetName(const std::string& name)
 bool Button::ContainsPoint(const Vector2& pt) const
 {
 	bool no = pt.x < (mPosition.x - mDimension.x / 2.0f) ||
-		pt.x > (mPosition.x + mDimension.x / 2.0f) ||
+		pt.x >(mPosition.x + mDimension.x / 2.0f) ||
 		pt.y < (mPosition.y - mDimension.y / 2.0f) ||
-		pt.y > (mPosition.y + mDimension.y / 2.0f);
+		pt.y >(mPosition.y + mDimension.y / 2.0f);
 	return !no;
 }
 
@@ -65,8 +72,8 @@ void Button::Draw(SDL_Texture* tex, SDL_Renderer* renderer)
 	SDL_Rect r;
 	r.w = (int)dim.x;
 	r.h = (int)dim.y;
-	r.x = (int)pos.x - dim.x/2;
-	r.y = (int)pos.y - dim.y/2;
+	r.x = (int)pos.x - dim.x / 2;
+	r.y = (int)pos.y - dim.y / 2;
 
 	SDL_RenderCopyEx(renderer,
 		tex,
@@ -79,16 +86,18 @@ void Button::Draw(SDL_Texture* tex, SDL_Renderer* renderer)
 	int x = 0;
 	int y = 0;
 
-	if (!mNameTexture)
+	if (!mNameTexture && mName != "")
 	{
 		SetName(mName);
 	}
 
+	if (mName == "") return;
+
 	SDL_Rect dstRect;
 	dstRect.w = mNameTexWidth;
 	dstRect.h = mNameTexHeight;
-	dstRect.x = r.x + (r.w - dstRect.w)/2;
-	dstRect.y = r.y + (r.h - dstRect.h)/2;
+	dstRect.x = r.x + (r.w - dstRect.w) / 2;
+	dstRect.y = r.y + (r.h - dstRect.h) / 2;
 
 	SDL_RenderCopyEx(renderer,
 		mNameTexture,

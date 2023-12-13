@@ -18,7 +18,7 @@ public:
 
 	// Returns true if the point is within the button's bounds
 	bool ContainsPoint(const Vector2& pt) const;
-	
+
 	// Called when button is clicked
 	void OnClick();
 
@@ -35,17 +35,27 @@ public:
 	std::function<void()> GetOnClick() const { return mOnClick; }
 	void SetNameTexture(SDL_Texture* tex) { mNameTexture = tex; }
 	void SetFont(Font* font) { mFont = font; }
+	void SetFontSize(int size) { mFontSize = size; }
 	void SetPosition(Vector2 pos) { mPosition = pos; }
 	void SetDimension(Vector2 dim) { mDimension = dim; }
 	void SetHighlighted(bool highlight) { mHighlighted = highlight; }
+	void SetSelectionTexts(SDL_Texture* selected, SDL_Texture* unselected) {
+		mSelectedTexture = selected;
+		mUnselectedTexture = unselected;
+	}
+	SDL_Texture* GetSelected() const { return mSelectedTexture; }
+	SDL_Texture* GetUnSelected() const { return mUnselectedTexture; }
 
 private:
 	std::function<void()> mOnClick;
 	std::string mName;
 	SDL_Texture* mNameTexture;
+	SDL_Texture* mSelectedTexture;
+	SDL_Texture* mUnselectedTexture;
 	int mNameTexWidth;
 	int mNameTexHeight;
 	class Font* mFont;
+	int mFontSize;
 	Vector2 mPosition;
 	Vector2 mDimension;
 	bool mHighlighted;

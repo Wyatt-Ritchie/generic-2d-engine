@@ -351,6 +351,13 @@ Font* Game::GetFont(const std::string& fileName)
 
 }
 
+void Game::ResizeWindow(Vector2 size)
+{
+	SDL_SetWindowSize(mWindow,
+		static_cast<int>(size.x),
+		static_cast<int>(size.y));
+}
+
 void Game::LoadData()
 {
 	// Set temp background 
