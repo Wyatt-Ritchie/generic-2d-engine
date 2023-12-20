@@ -19,7 +19,6 @@ Actor::~Actor()
 	while (!mComponents.empty())
 	{
 		delete mComponents.back();
-		mComponents.pop_back();
 	}
 }
 
